@@ -1,0 +1,15 @@
+{
+  "name": "jake_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "James Becwar",
+  "license": "ISC",
+  "dependencies": {
+    "mocha": "^4.0.1",
+    "rpio": "^0.9.19"
+  }
+}

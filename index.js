@@ -64,9 +64,11 @@ rpio.i2cBegin();
 rpio.i2cSetSlaveAddress(PCA9685_ADDRESS);
 rpio.i2cSetBaudRate(100000);
 init();
-for (var i = 0; i < 100; i++) {
-    set_pwm(0, 0, 4094 - (40 * i));
-    rpio.msleep(20);
-}
-//set_pwm(0,0,4094);
+//for (var i = 0; i < 100; i++) {
+//    set_pwm(0, 0, 4094 - (40 * i));
+//    rpio.msleep(2000);
+//}
+set_pwm(0,0,4093);
+//set_pwm(0,0,4093);
+set_pwm(1,0,0);
 rpio.i2cEnd();

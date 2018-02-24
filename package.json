@@ -9,7 +9,12 @@
   "author": "James Becwar",
   "license": "ISC",
   "dependencies": {
+    "hapi": "^17.2.0",
+    "hapi-swagger": "^9.1.1",
+    "inert": "^5.1.0",
+    "joi": "^13.1.2",
     "mocha": "^4.0.1",
-    "rpio": "^0.9.19"
+    "rpio": "^0.9.19",
+    "vision": "^5.3.1"
   }
 }

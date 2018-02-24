@@ -50,8 +50,23 @@ server.route({
         }
     ]);
 
-    await server.start();
-    console.log(`Server running at: ${server.info.uri}`);
+    await server.register({
+        plugin: require('good'),
+        options: {
+            ops:false,
+            // ops: {
+            //     interval: 10000
+            // },
+            reporters: {
+                myConsoleReporter: [ {
+                    module: 'good-console'
+                }, 'stdout']
+            }
+        }
+    });
 
-})();
+await server.start();
+console.log(`Server running at: ${server.info.uri}`);
+
+}) ();
 

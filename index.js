@@ -68,7 +68,13 @@ init();
 //    set_pwm(0, 0, 4094 - (40 * i));
 //    rpio.msleep(2000);
 //}
-set_pwm(0,0,4093);
+rpio.msleep(2000);
+for(var i =0; i <= 12; i=i+2)
+{
+set_pwm(i,0,4093);
 //set_pwm(0,0,4093);
-set_pwm(1,0,0);
+set_pwm(i+1,0,0);
+rpio.msleep(2000);
+}
+
 rpio.i2cEnd();

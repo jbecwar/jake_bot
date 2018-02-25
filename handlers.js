@@ -1,10 +1,15 @@
+var motors = require("./lib/motors.js");
+
 exports.setSpeed = async function setSpeed(request, h)
 {
-    throw new Error("Need to set speed here.");
+    var x = request.params.x;
+    var y = request.params.y;
+
+    return await motors.setGroupSpeed(x,y);
 };
 
 exports.stop = async function stop(request,h)
 {
-    throw new Error("need to stop here");
+    return await motors.setGroupSpeed(0,0);
 };
 

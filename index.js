@@ -56,6 +56,13 @@ server.route({
     config: { tags: ['api'] }
 });
 
+server.route({
+    method: 'GET',
+    path: '/',
+    handler: async (request,h) =>{ return h.file("./app.html")},
+    config: { tags: ['app'] }
+});
+
 (async () => {
     await server.register([
         Inert,

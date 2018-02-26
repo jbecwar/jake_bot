@@ -36,6 +36,21 @@ server.route({
 
 server.route({
     method: 'PUT',
+    path: '/setMotor/{motor}/{speed}',
+    handler: handlers.setSpeedMotor,
+    config: {
+        tags: ['api'],
+        validate: {
+            params: {
+                motor: Joi.number().required(),
+                speed: Joi.number().required()                
+            },
+        }
+    }
+});
+
+server.route({
+    method: 'PUT',
     path: '/stop',
     handler: handlers.stop,
     config: { tags: ['api'] }

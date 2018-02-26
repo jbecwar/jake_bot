@@ -7,6 +7,7 @@ const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 const Joi = require('joi');
+const pwm = require("./lib/pca9685.js");
 
 const server = new Hapi.Server({ port: 3000, host: 'localhost' });
 
@@ -65,6 +66,7 @@ server.route({
         }
     });
 
+await pwm.init();
 await server.start();
 console.log(`Server running at: ${server.info.uri}`);
 

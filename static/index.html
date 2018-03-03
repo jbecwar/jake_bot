@@ -2,9 +2,11 @@
 
 <head>
     <title>Jake Bot</title>
+
+    <script src="nipplejs.min.js"></script>
 </head>
 
-<body>
+<body style="background-color: black">
     X:
     <input type="text" id="x" /> Y:
     <input type="text" id="y" />
@@ -22,7 +24,7 @@
         document.body.appendChild(canvas);
 
         // Create h264 player
-        var uri = "ws://" + document.location.host.replace(":8000",":8080");
+        var uri = "ws://" + document.location.host.replace(":8000", ":8080");
         var wsavc = new WSAvcPlayer(canvas, "webgl", 1, 35);
         wsavc.connect(uri);
 
@@ -31,7 +33,9 @@
 
     </script>
 
-
+    <script>
+        var manager = nipplejs.create({});
+    </script>
     <script>
         var x = 0;
         var y = 0;
@@ -97,4 +101,5 @@
         }, false);
     </script>
 </body>
+
 </html>

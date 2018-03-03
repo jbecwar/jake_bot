@@ -1,5 +1,5 @@
 'use strict';
-
+const Path = require('path');
 const Hapi = require('hapi');
 const handlers = require('./handlers');
 const Inert = require('inert');
@@ -8,8 +8,20 @@ const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 const Joi = require('joi');
 const pwm = require("./lib/pca9685.js");
+const ws = require("./wsserver.js");
 
-const server = new Hapi.Server({ port: 3000, host: 'localhost' });
+
+const server = new Hapi.Server({
+    port: 8000,
+    host: 'localhost',
+    routes: {
+        files: {
+            relativeTo: Path.join(__dirname,"static")
+        }
+    }
+});
+
+const wss = new ws({ port: 8080 });
 
 const swaggerOptions = {
     info: {
@@ -18,54 +30,11 @@ const swaggerOptions = {
     },
 };
 
-
-server.route({
-    method: 'PUT',
-    path: '/setSpeed/{x}/{y}',
-    handler: handlers.setSpeed,
-    config: {
-        tags: ['api'],
-        validate: {
-            params: {
-                x: Joi.number().required(),
-                y: Joi.number().required()
-            },
-        }
-    }
-});
-
-server.route({
-    method: 'PUT',
-    path: '/setMotor/{motor}/{speed}',
-    handler: handlers.setSpeedMotor,
-    config: {
-        tags: ['api'],
-        validate: {
-            params: {
-                motor: Joi.number().required(),
-                speed: Joi.number().required()                
-            },
-        }
-    }
-});
-
-server.route({
-    method: 'PUT',
-    path: '/stop',
-    handler: handlers.stop,
-    config: { tags: ['api'] }
-});
-
-server.route({
-    method: 'GET',
-    path: '/',
-    handler: async (request,h) =>{ return h.file("./app.html")},
-    config: { tags: ['app'] }
-});
-
 (async () => {
+
+    await server.register(Inert);
+
     await server.register([
-        Inert,
         Vision,
         {
             plugin: HapiSwagger,
@@ -76,21 +45,77 @@ server.route({
     await server.register({
         plugin: require('good'),
         options: {
-            ops:false,
+            ops: false,
             // ops: {
             //     interval: 10000
             // },
             reporters: {
-                myConsoleReporter: [ {
+                myConsoleReporter: [{
                     module: 'good-console'
                 }, 'stdout']
             }
         }
     });
 
-await pwm.init();
-await server.start();
-console.log(`Server running at: ${server.info.uri}`);
+    server.route({
+        method: 'PUT',
+        path: '/setSpeed/{x}/{y}',
+        handler: handlers.setSpeed,
+        config: {
+            tags: ['api'],
+            validate: {
+                params: {
+                    x: Joi.number().required(),
+                    y: Joi.number().required()
+                },
+            }
+        }
+    });
 
-}) ();
+    server.route({
+        method: 'PUT',
+        path: '/setMotor/{motor}/{speed}',
+        handler: handlers.setSpeedMotor,
+        config: {
+            tags: ['api'],
+            validate: {
+                params: {
+                    motor: Joi.number().required(),
+                    speed: Joi.number().required()
+                },
+            }
+        }
+    });
+
+    server.route({
+        method: 'PUT',
+        path: '/stop',
+        handler: handlers.stop,
+        config: { tags: ['api'] }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: async (request, h) => { return h.redirect("/index.html") },
+        config: { tags: ['app'] }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/{param*}',
+        handler: {
+            directory: {
+                path: '.',
+                redirectToSlash: true,
+                index: true,
+            }
+        }
+    });
+
+    await pwm.init();
+    await server.start();
+    console.log(`Server running at: ${server.info.uri}`);
+
+})();
 

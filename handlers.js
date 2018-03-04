@@ -1,4 +1,5 @@
 var motors = require("./lib/motors.js");
+var servos = require("./lib/servo.js");
 
 exports.setSpeed = async function setSpeed(request, h) {
     var x = request.params.x;
@@ -11,6 +12,16 @@ exports.setSpeed = async function setSpeed(request, h) {
 exports.stop = async function stop(request, h) {
     await motors.setGroupSpeed(0, 0);
     return "OK"
+};
+
+exports.setServo = async function setServo(request, h)
+{
+    var servoNumber = request.params.servoNumber;
+    var pulseLength = request.params.pulseLength;
+
+    await servos.setServo(servoNumber,pulseLength);
+
+    return "OK";
 };
 
 exports.setSpeedMotor = async function setSpeedMotor(request, h) {
@@ -45,4 +56,6 @@ exports.setSpeedMotor = async function setSpeedMotor(request, h) {
     await motors.setMotorSpeed(motorArray, speed);
     return "OK";
 }
+
+
 

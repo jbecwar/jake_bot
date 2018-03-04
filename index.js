@@ -89,6 +89,23 @@ const swaggerOptions = {
 
     server.route({
         method: 'PUT',
+        path: '/setServo/{servoNumber}/{pulseLength}',
+        handler: handlers.setServo,
+        config: {
+            tags: ['api'],
+            validate: {
+                params: {
+                    servoNumber: Joi.number().required(),
+                    pulseLength: Joi.number().required()
+                },
+            }
+        }
+    });
+
+
+
+    server.route({
+        method: 'PUT',
         path: '/stop',
         handler: handlers.stop,
         config: { tags: ['api'] }
@@ -114,6 +131,7 @@ const swaggerOptions = {
     });
 
     await pwm.init();
+    await pwm.set_pwm_freq(60);  //60hz is good for servos
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
 

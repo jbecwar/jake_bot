@@ -4,6 +4,7 @@
     <title>Jake Bot</title>
 
     <script src="nipplejs.min.js"></script>
+    <script type="text/javascript" src="http-live-player.js">;</script>
 </head>
 
 <body style="background-color: black">
@@ -17,11 +18,13 @@
     <br/>
 
     <!-- provide WSAvcPlayer -->
-    <script type="text/javascript" src="http-live-player.js">;</script>
+    <div id="joystickZone" style="width:100%;min-height:900px;">
+        <canvas id="videoCanvas"/>
+    </div>
+
     <script type="text/javascript">
 
-        var canvas = document.createElement("canvas");
-        document.body.appendChild(canvas);
+        var canvas = document.getElementById("videoCanvas");
 
         // Create h264 player
         var uri = "ws://" + document.location.host.replace(":8000", ":8080");
@@ -34,7 +37,7 @@
     </script>
 
     <script>
-        var manager = nipplejs.create({});
+        var manager = nipplejs.create({zone:document.getElementById("joystickZone")});
     </script>
     <script>
         var x = 0;

@@ -18,8 +18,8 @@ class _Server {
     this.options = {
       width: 960,
       height: 540,
+      rotate: 270,
       fps: 30,
-      rotate: 90
     }
 
     this.wss = new WebSocketServer(serverconfig);

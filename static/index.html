@@ -8,9 +8,9 @@
 </head>
 
 <body style="background-color: black">
-    X:
-    <input type="text" id="x" /> Y:
-    <input type="text" id="y" />
+    X:<input type="text" id="x" />
+    Y:<input type="text" id="y" />
+    Camera Angle:<input type="text" id="cameraAngle" />
 
     <button type="button" onclick="wsavc.playStream()">Start Video</button>
     <button type="button" onclick="wsavc.stopStream()">Stop Video</button>
@@ -19,7 +19,7 @@
 
     <!-- provide WSAvcPlayer -->
     <div id="joystickZone" style="width:100%;min-height:900px;">
-        <canvas id="videoCanvas"/>
+        <canvas id="videoCanvas" />
     </div>
 
     <script type="text/javascript">
@@ -37,11 +37,12 @@
     </script>
 
     <script>
-        var manager = nipplejs.create({zone:document.getElementById("joystickZone")});
+        var manager = nipplejs.create({ zone: document.getElementById("joystickZone") });
     </script>
     <script>
         var x = 0;
         var y = 0;
+        var cameraAngle = 0;
         var scale = 100;
 
         document.getElementById("x").value = x;
@@ -64,12 +65,21 @@
             }
         }
 
-        var sendValues = function (x, y) {
+        var sendValues = function (x, y, camAngle) {
             var url = "/setSpeed/" + x + "/" + y;
             var xhr = new XMLHttpRequest();
             xhr.open("PUT", url, true);
             xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             xhr.send();
+            
+            var pulseLength = Math.floor(375 + ((camAngle/90) * 225));
+
+            var camUrl = "/setServo/1/" + pulseLength;
+            var xhr2 = new XMLHttpRequest();
+            xhr2.open("PUT",camUrl,true);
+            xhr2.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr2.send();
+
         }
 
         window.addEventListener('keydown', function (event) {
@@ -93,13 +103,27 @@
                     x = 0;
                     y = 0;
                     break;
+                case 65: //a
+                    if (cameraAngle < 90) {
+                        cameraAngle += 1;
+                    }
+                    break;
+                case 68: //d
+                    if (cameraAngle > -90) {
+                        cameraAngle -= 1;
+                    }
+                    break;
+                case 83: //s
+                    cameraAngle = 0;
+                    break;
                 default:
                     console.log(event.keyCode);
                     break;
             }
             document.getElementById("x").value = x;
             document.getElementById("y").value = y;
-            sendValues(x, y);
+            document.getElementById("cameraAngle").value = cameraAngle;
+            sendValues(x, y, cameraAngle);
 
         }, false);
     </script>

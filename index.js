@@ -9,28 +9,45 @@ const Pack = require('./package');
 const Joi = require('joi');
 const pwm = require("./lib/pca9685.js");
 const ws = require("./wsserver.js");
-
+const os = require("os");
 
 const server = new Hapi.Server({
     port: 8000,
     host: '0.0.0.0',
     routes: {
         files: {
-            relativeTo: Path.join(__dirname,"static")
+            relativeTo: Path.join(__dirname, "static")
         }
     }
 });
 
 const wss = new ws({ port: 8080 });
 
-const swaggerOptions = {
-    info: {
-        title: 'Test API Documentation',
-        version: Pack.version,
-    },
-};
-
 (async () => {
+    const networkInterfaces = os.networkInterfaces();
+
+    var ip = "127.0.0.1";
+
+    Object.keys(networkInterfaces).forEach(key => {
+        var a = networkInterfaces[key];
+        if (Array.isArray(a)) {
+            a.forEach((iface) => {                
+                if (iface.internal == false && iface.family == "IPv4") {                    
+                    ip = iface.address;
+                }
+            })
+        }
+    });
+
+
+    const swaggerOptions = {
+        info: {
+            title: 'Test API Documentation',
+            version: Pack.version,
+        },
+        host: ip + ":8000"
+
+    };
 
     await server.register(Inert);
 

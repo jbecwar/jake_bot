@@ -18,7 +18,7 @@ class _Server {
     this.options = {
       width: 960,
       height: 540,
-      fps: 12,
+      fps: 30,
       rotate: 90
     }
 

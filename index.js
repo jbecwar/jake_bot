@@ -10,6 +10,13 @@ const Joi = require('joi');
 const pwm = require("./lib/pca9685.js");
 const ws = require("./wsserver.js");
 const os = require("os");
+const util = require('util')
+
+process.on('uncaughtException', (err) => {
+    console.error("Uncaugh Exception:");
+    console.error(util.inspect(err, {depth:null,colors:true}));
+    process.exit(-1);
+});
 
 const server = new Hapi.Server({
     port: 8000,
@@ -31,8 +38,8 @@ const wss = new ws({ port: 8080 });
     Object.keys(networkInterfaces).forEach(key => {
         var a = networkInterfaces[key];
         if (Array.isArray(a)) {
-            a.forEach((iface) => {                
-                if (iface.internal == false && iface.family == "IPv4") {                    
+            a.forEach((iface) => {
+                if (iface.internal == false && iface.family == "IPv4") {
                     ip = iface.address;
                 }
             })

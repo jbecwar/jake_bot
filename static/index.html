@@ -8,9 +8,10 @@
 </head>
 
 <body style="background-color: black">
-    X:<input type="text" id="x" />
-    Y:<input type="text" id="y" />
-    Camera Angle:<input type="text" id="cameraAngle" />
+    X:
+    <input type="text" id="x" /> Y:
+    <input type="text" id="y" /> Camera Angle:
+    <input type="text" id="cameraAngle" />
 
     <button type="button" onclick="wsavc.playStream()">Start Video</button>
     <button type="button" onclick="wsavc.stopStream()">Stop Video</button>
@@ -27,7 +28,7 @@
         var canvas = document.getElementById("videoCanvas");
 
         // Create h264 player
-        var uri = "ws://jakebotvid.jamesbecwar.com" 
+        var uri = "ws://jakebotvid.jamesbecwar.com"
         var wsavc = new WSAvcPlayer(canvas, "webgl", 1, 35);
         wsavc.connect(uri);
 
@@ -38,8 +39,17 @@
 
     <script>
         var manager = nipplejs.create({ zone: document.getElementById("joystickZone") });
-    </script>
-    <script>
+        
+        manager.on('move', (evt, data) => {
+            console.log(evt);
+            console.log(data);
+            var distance = (data.distance / 50) * 4090;
+            var angle = data.angle.radian;
+            x = distance * Math.cos(angle);
+            y = distance * Math.sin(angle);
+            setXYCamera(x,y,cameraAngle);
+        })
+    
         var x = 0;
         var y = 0;
         var cameraAngle = 0;
@@ -71,16 +81,18 @@
             xhr.open("PUT", url, true);
             xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             xhr.send();
-            
-            var pulseLength = Math.floor(375 + ((camAngle/90) * 225));
+
+            var pulseLength = Math.floor(375 + ((camAngle / 90) * 225));
 
             var camUrl = "/setServo/1/" + pulseLength;
             var xhr2 = new XMLHttpRequest();
-            xhr2.open("PUT",camUrl,true);
+            xhr2.open("PUT", camUrl, true);
             xhr2.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             xhr2.send();
 
         }
+
+        sendValues(0, 0, 0);
 
         window.addEventListener('keydown', function (event) {
             switch (event.keyCode) {
@@ -120,12 +132,18 @@
                     console.log(event.keyCode);
                     break;
             }
+            
+            setXYCamera(x,y,cameraAngle);
+
+        }, false);
+
+        var setXYCamera = function(x,y,cameraAngle)
+        {
             document.getElementById("x").value = x;
             document.getElementById("y").value = y;
             document.getElementById("cameraAngle").value = cameraAngle;
             sendValues(x, y, cameraAngle);
-
-        }, false);
+        };
     </script>
 </body>
 
